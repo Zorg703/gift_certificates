@@ -1,0 +1,33 @@
+<div class="py-5 text-center">
+    <div class="alert alert-danger alert-dismissible" ng-if="$ctrl.message">
+        <a class="close" data-dismiss="alert" aria-label="close"  ng-click="$ctrl.message=null">&times;</a>
+        <p ng-show="$ctrl.message==400" translate="error.user"></p>
+        <p ng-show="$ctrl.message==-1" translate="error.unknown"></p>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="mx-auto col-md-6 col-10 bg-white p-5">
+                <h1 class="mb-4" translate="auth.sign-up-form.header"></h1>
+                <form name="registration" novalidate>
+                    <div class="form-group"> <input type="text" ng-pattern="/[a-z0-9_-]{3,15}/" class="form-control" placeholder="{{'auth.login-form.field.username' | translate}}" name="name" ng-model="username" ng-required="true" >
+                        <div ng-if="registration.name.$invalid && registration.name.$touched">
+                        <small translate="auth.login-form.field.username.pattern"></small>
+                    </div>
+                    </div>
+                    <div class="form-group mb-3"> <input type="password" class="form-control" placeholder="{{'auth.sign-up-form.field.password' | translate}}" name="password" ng-model="password" ng-required="true" ng-pattern="/^(?=.*\d).{4,8}$/">
+                    <div ng-show="registration.password.$invalid && registration.password.$touched ">
+                        <small translate="auth.sign-up-form.field.password.pattern"></small>
+                    </div>
+                    </div>
+                    <div class="form-group mb-3"> <input type="password" class="form-control" placeholder="{{'auth.sign-up-form.field.repeat-password'| translate}}" name="password2" ng-model="password2" ng-required="true" ng-pattern="password">
+                        <div ng-show="registration.password2.$invalid && registration.password2.$touched ">
+                            <small translate="auth.sign-up-form.field.repeat-password.invalid"></small>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-primary" ng-disabled="registration.$invalid" ng-click="$ctrl.signup(this)" translate="auth.sign-up-form.submit"></button>
+                    <a class="btn btn-primary"   href="#!/certificates" translate="common.cancel"></a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

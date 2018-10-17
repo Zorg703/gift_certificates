@@ -1,0 +1,107 @@
+<div class="py-0 text-center" style="background: gray">
+    <div class="alert alert alert-danger alert-dismissible" ng-if="$ctrl.rootScope.message==='bad'">
+        <a href="" class="close" data-dismiss="alert" aria-label="close" ng-click="$ctrl.rootScope.message=null">&times;</a>
+        <p ng-if="$ctrl.rootScope.message==='bad'" translate="message.cart.problems"></p>
+    </div>
+    <div class="alert alert alert-danger alert-dismissible" ng-if="$ctrl.rootScope.message==='error'">
+        <a href="" class="close" data-dismiss="alert" aria-label="close" ng-click="$ctrl.rootScope.message=null">&times;</a>
+        <p ng-if="$ctrl.rootScope.message==='error'" translate="message.cart.error"></p>
+    </div>
+    <div class="alert alert alert-danger alert-dismissible" ng-if="$ctrl.rootScope.message==='unknown'">
+        <a href="" class="close" data-dismiss="alert" aria-label="close" ng-click="$ctrl.rootScope.message=null">&times;</a>
+        <p ng-if="$ctrl.rootScope.message==='unknown'" translate="error.unknown"></p>
+    </div>
+    <div class="py-5 cert" >
+        <div class="text-center mx-auto col-md-12">
+            <h1 class="text-light" ng-show="!$ctrl.purchase ||$ctrl.purchase.length===0" translate="cart.empty"></h1>
+            <h1 class="text-light" ng-hide="!$ctrl.purchase ||$ctrl.purchase.length===0" translate="cart.not-empty"></h1>
+        </div>
+        <div class="card shopping-cart" ng-show="$ctrl.purchase && $ctrl.purchase.length!==0">
+            <div class="card-body">
+                <div  ng-repeat="certificate in $ctrl.purchase">
+                    <div class="row">
+                        <div class="col-12 col-sm-12 col-md-2 text-center">
+                            <img class="img-responsive" src="http://pravda-odna.com/wp-content/uploads/2011/06/102.jpg" alt="prewiew" width="120" height="80">
+                        </div>
+                        <div class="col-12 text-sm-center col-sm-12 text-md-left col-md-6">
+                            <h4 class="product-name">
+                                <strong>{{certificate.name | limitTo : 40}}</strong>
+                            </h4>
+                            <h4>
+                                <small>{{certificate.description | limitTo : 40}}</small>
+                            </h4>
+                        </div>
+                        <div class="col-12 col-sm-12 text-sm-center col-md-4 text-md-right row">
+                            <div class="col-3 col-sm-3 col-md-6 text-md-right" style="padding-top: 5px">
+                                <h6>
+                                    <strong>{{certificate.price| currency}}</strong>
+                                </h6>
+                            </div>
+                            <div class="col-4 col-sm-4 col-md-4">
+                                <div class="quantity">
+                                    <input type="button" value="+" class="plus"  ng-mousedown="$ctrl.add(certificate)">
+                                    <input type="number" disabled step="1" max="99" min="1" value="{{certificate.count}}" title="Qty" class="qty"
+                                           size="4">
+                                    <input type="button" value="-" class="minus" ng-click="$ctrl.remove(certificate)">
+                                </div>
+                            </div>
+                            <div class="col-2 col-sm-2 col-md-2 text-right">
+                                <button type="button" class="btn btn-outline-danger btn-xs" ng-click="$ctrl.delete(certificate)">
+                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="pull-right" style="margin: 10px">
+                    <button type="button" class="btn btn-success pull-right" data-toggle="modal" data-target="#buyModal-123" translate="certificate.shopping-cart.check"></button>
+                    <div class="pull-right" style="margin: 5px">
+                        <strong translate="certificate.shopping-cart.total"></strong>
+                        <b>{{$ctrl.totalCost() | currency}}</b>
+                    </div>
+                </div>
+                <div class="modal fade" id="buyModal-123" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" translate="certificates.certificate-card.edit.buy"></h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p translate="certificates.certificate-card.buy.confirm"> <h5>{{$ctrl.totalCost() | currency}}</h5></p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal" translate="common.cancel"></button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal"  ng-click="$ctrl.doOrder()" translate="certificates.certificate-card.edit.buy"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <nav class="my-4" style="margin-left: 45%" ng-show="$crtl.purchase.length>4">
+                <ul class="pagination pagination-circle">
+                    <li class="page-item"><a class="page-link" ng-click="$ctrl.first()" translate="certificate.certificate-list.first"></a></li>
+                    <li class="page-item">
+                        <a class="page-link" aria-label="Previous" ng-click="$ctrl.previous()">
+                            <span aria-hidden="true">«</span>
+                            <span class="sr-only" translate="certificate.certificate-list.previous"></span>
+                        </a>
+                    </li>
+                    <li class="page-item" ng-repeat="page in $ctrl.pages track by $index"><a class=""  ng-class="($ctrl.page==page)?'btn abc':'page-link'" ng-click="$ctrl.changePage(page)">{{page}}</a></li>
+                    <li class="page-item">
+                        <a class="page-link" aria-label="Next" ng-click="$ctrl.next()">
+                            <span aria-hidden="true">»</span>
+                            <span class="sr-only" translate="certificate.certificate-list.next"></span>
+                        </a>
+                    </li>
+                    <li class="page-item"><a class="page-link" ng-click="$ctrl.last()" translate="certificate.certificate-list.last"></a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>

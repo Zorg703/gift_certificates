@@ -1,0 +1,156 @@
+<div class="py-0 text-center" style="background: gray">
+    <div class="alert alert-danger alert-dismissible" ng-if="$ctrl.message">
+        <a href="" class="close" data-dismiss="alert" aria-label="close" ng-click="$ctrl.message=null">&times;</a>
+        <p ng-show="$ctrl.message===400" translate="error.certificate"></p>
+        <p ng-show="$ctrl.message===401" translate="unauthorized"></p>
+        <p ng-show="$ctrl.message===-1" translate="error.unknown"></p>
+    </div>
+    <div class="alert alert-success alert-dismissible" ng-if="$ctrl.$rootScope.message==='hello'">
+        <a href="" class="close" data-dismiss="alert" aria-label="close" ng-click="$ctrl.$rootScope.message=null">&times;</a>
+        <p ng-if="$ctrl.$rootScope.message==='hello'" translate="message.hello"></p>
+        <p ng-if="$ctrl.$rootScope.message==='operation'" translate="message.operation"></p>
+    </div>
+    <div class="alert alert-success alert-dismissible" ng-if="$ctrl.$rootScope.message==='operation'">
+        <a href="" class="close" data-dismiss="alert" aria-label="close" ng-click="$ctrl.$rootScope.message=null">&times;</a>
+        <p ng-if="$ctrl.$rootScope.message==='operation'" translate="message.operation"></p>
+    </div>
+    <div class="py-5" >
+        <div class="container">
+            <div class="row">
+                <div class="text-center mx-auto col-md-12">
+                    <h1 class="text-light" ng-show="$ctrl.state.current.name!=='my'" translate="header.certificates"></h1>
+                    <h1 class="text-light" ng-show="$ctrl.state.current.name==='my'" translate="certificates.certificate-list.my"></h1>
+                </div>
+            </div>
+            <div class="row" ng-show="$ctrl.state.current.name!=='my'">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-12 col-md-10 col-lg-8">
+                            <form class="card card-sm">
+                                <div class="card-body row no-gutters align-items-center">
+                                    <div class="btn-group mr-auto">
+                                        <button type="button" class="btn btn-info dropdown-toggle" style="height:46px" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            {{'certificates.certificate-form.sort' | translate}}
+                                        </button>
+                                        <div class="dropdown-menu mr-auto">
+                                            <a href="" class="dropdown-item" ng-click="$ctrl.changeSort('name')" >{{'certificates.certificate-form.sort.name' | translate}}</a>
+                                            <a href="" class="dropdown-item" ng-click="$ctrl.changeSort('date')">{{'certificates.certificate-form.sort.date'| translate}}</a>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <input class="form-control form-control-lg form-control-borderless" ng-model="$ctrl.search" type="search" placeholder="{{'certificate.certificate-list.placeholder' | translate}}">
+                                    </div>
+                                    <div class="col-auto">
+                                        <button class="btn btn-lg btn-success" ng-click="$ctrl.searching()" translate="certificates.certificate-list.search" type="button" translate="certificates.certificate-list.search"></button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h3 ng-show=" $ctrl.certificates!==undefined && $ctrl.certificates.length==0" class="text-center text-dark" translate="certificate.certificate-list.not-found"></h3>
+        <div class="card-deck card-body text-center" style="width: 1400px; margin-left: 5%">
+            <div class="row" >
+                <div class="col-md-4 p-3" ng-repeat="certificate in $ctrl.certificates">
+                    <div class="card text-center text-dark" style="width: 350px; height: 380px; margin-left: 150px">
+                        <div class="card-body p-4">
+                            <div >
+                                <a class="name" ng-bind="certificate.name | limitTo : 15" data-toggle="modal" data-target="#descriptionModal-{{certificate.id}}" href=""></a>
+                                <p class="my-3" ng-bind="certificate.description | limitTo : 30"></p>
+                                <h2 >{{certificate.price}}$</h2>
+                                <div ng-if="$ctrl.checkCertificateInPurchase(certificate) && $ctrl.state.current.name!=='my'">
+                                    <h2 style="color: red">In cart</h2>
+                                </div>
+                            </div>
+                            <div ng-if="!$ctrl.checkCertificateInPurchase(certificate)">
+                                <a class="btn btn-primary mt-3" ng-show="($ctrl.isAuthenticated() && $ctrl.state.current.name!=='my')" ng-click="$ctrl.addToCart(certificate)" translate="certificate.certificate-list.add"></a>
+                            </div>
+                            <a class="btn btn-info mt-3" ng-show="$ctrl.isAdmin() && $ctrl.state.current.name!=='my'" ng-click="$ctrl.edit(certificate.id)" translate="certificates.certificate-card.edit"></a>
+                            <a class="btn btn-danger mt-3" ng-show="$ctrl.isAdmin() && $ctrl.state.current.name!=='my'" data-toggle="modal" data-target="#deleteModal-{{certificate.id}}" translate="certificates.certificate-card.delete"></a>
+                        </div>
+                        <div class="inl" ng-repeat="tag in certificate.tags | limitTo : 2">
+                            <button class="button btn-dark inl" ng-bind="tag.name" ng-click="$ctrl.addInSerach(tag.name)"></button>
+                        </div>
+                    </div>
+                    <div class="modal fade bd-example-modal-lg" id="descriptionModal-{{certificate.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">{{certificate.name}}</h5>
+                                    <hr>
+                                    <h5>{{certificate.price}}$</h5>
+                                    <hr>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <h5 translate="certificates.certificate-form.field.description"></h5>
+                                    <h7>{{certificate.description}}</h7>
+                                    <hr>
+                                    <h5 translate="certificate.certificate-list.date"></h5>
+                                    {{certificate.creationDate}}
+                                    <hr>
+                                </div>
+                                <hr>
+                                <div  class="inl" ng-repeat="tag in certificate.tags" >
+                                    <button class="button btn-dark inl" ng-bind="tag.name" ng-click="$ctrl.addInSerach(tag.name)"></button>
+                                </div>
+                                <div class="modal-footer">
+
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal" translate="common.close"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="deleteModal-{{certificate.id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Delete</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p translate="certificates.certificate-card.delete.confirm"> </p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal" translate="common.cancel"></button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal" ng-click="$ctrl.delete(certificate.id)" translate="certificates.certificate-form.delete"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div  class="text-center" ng-if="$ctrl.certificates.length>=6 ">
+            <label for="page" class="text-black-50" translate="certificate.certificate-list.page-size"></label>
+            <select id="page" ng-model="$ctrl.pageSize" aria-label="page-size" ng-change="$ctrl.showCountOfCertificates($ctrl.pageSize)">
+                <option ng-value="pageSize" ng-repeat="pageSize in $ctrl.availablePageSize" ng-bind="pageSize" ></option>
+            </select>
+        </div>
+        <nav class="my-4" style="margin-left: 40%" ng-show="$ctrl.certificates.length!==0">
+            <ul class="pagination pagination-circle" ng-if="$ctrl.pages.length>1">
+                <li class="page-item"><a class="page-link" ng-click="$ctrl.first()" translate="certificate.certificate-list.first"></a></li>
+                <li class="page-item">
+                    <a class="page-link" aria-label="Previous" ng-click="$ctrl.previous()">
+                        <span aria-hidden="true">«</span>
+                        <span class="sr-only" translate="certificate.certificate-list.next"></span>
+                    </a>
+                </li>
+                <li class="page-item" ng-repeat="page in $ctrl.pages track by $index"><a ng-class="($ctrl.page==page)?'btn abc':'page-link'" ng-click="$ctrl.changePage(page)">{{page}}</a></li>
+                <li class="page-item">
+                    <a class="page-link" aria-label="Next" ng-click="$ctrl.next()">
+                        <span aria-hidden="true">»</span>
+                        <span class="sr-only" translate="certificate.certificate-list.next"></span>
+                    </a>
+                </li>
+                <li class="page-item"><a class="page-link" ng-click="$ctrl.last()" translate="certificate.certificate-list.last"></a></li>
+            </ul>
+        </nav>
+    </div>
+</div>

@@ -1,0 +1,49 @@
+<div class="py-5 text-center">
+    <div class="alert alert-danger alert-dismissible" ng-if="$ctrl.message">
+        <a  class="close" data-dismiss="alert" aria-label="close" ng-click="$ctrl.message=null">&times;</a>
+        <p ng-show="$ctrl.message===400" translate="error.exist"></p>
+        <p ng-show="$ctrl.message===401" translate="unauthorized"></p>
+        <p ng-show="$ctrl.message===-1" translate="error.unknown"></p>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="mx-auto col-md-6 col-10 bg-white p-5" name="addForm">
+                <h1 class="mb-4" translate="certificates.certificate-form.add.header"></h1>
+                <form name="addForm">
+                    <label for="title" translate="certificates.certificate-form.field.name"></label>
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="title" id="title" ng-model="$ctrl.certificate.name" ng-required="true" ng-minlength="3" ng-maxlength="30">
+                        <div ng-if="addForm.title.$invalid && addForm.title.$touched">
+                            <small translate="common.validation.min-length"></small>
+                        </div>
+                    </div>
+                    <label for="description" translate="certificates.certificate-form.field.description"></label>
+                    <div class="form-group">
+                        <textarea class="form-control" id="description" name="description" rows="3" ng-model="$ctrl.certificate.description" ng-maxlength="300"></textarea>
+                        <div ng-if="addForm.description.$invalid">
+                            <small translate="common.validation.max-length"></small>
+                        </div>
+                    </div>
+                    <label for="price" translate="certificates.certificate-form.field.price"></label>
+                    <div class="form-group">
+                        <input type="number" ng-min="0.01" name="price" ng-max="1000000000" step="0.01" class="form-control" id="price" ng-model="$ctrl.certificate.price" ng-required="true" ng-pattern="/^\d{1,9}(\.\d{1,2})?$/">
+                        <div ng-if="addForm.price.$invalid && addForm.price.$touched">
+                            <small translate="common.validation.min"></small>
+                        </div>
+                    </div>
+                    <label for="duration" certificates.certificate-form.field.duration></label>
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="duration" id="duration" ng-model="$ctrl.certificate.duration" min="1" max="1000" ng-pattern="/\d+/" ng-required="true">
+                        <div ng-if="addForm.duration.$invalid && addForm.duration.$touched">
+                            <small translate="common.validation.duration"></small>
+                        </div>
+                    </div>
+                    <label translate="certificates.certificate-form.field.tags"></label>
+                    <tags-input placeholder="{{'placeholder.tags' | translate }}" ng-model="$ctrl.certificate.tags" display-property="name" ng-maxlength="15"></tags-input>
+                    <button type="button" class="btn btn-primary" ng-click="$ctrl.save()" translate="certificates.certificate-form.add" ng-disabled="addForm.$invalid"></button>
+                    <button type="button" class="btn btn-primary" ng-click="$ctrl.state.go('certificates')" translate="common.cancel"></button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
