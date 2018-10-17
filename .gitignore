@@ -1,0 +1,24 @@
+# Intellij
+.idea/
+*.iml
+*.iws
+out/
+
+#Gradle
+.gradle/
+build/
+
+# Maven
+log/
+target/
+
+
+#Gradle
+
+.gradle/
+gradle/
+
+build/
+
+#Webpack
+node_modules/
